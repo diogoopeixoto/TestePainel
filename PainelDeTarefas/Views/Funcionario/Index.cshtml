@@ -1,0 +1,29 @@
+﻿@model IEnumerable<PainelDeTarefas.Models.Funcionarios>
+
+<h1>Lista de Funcionários</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Matrícula</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var funcionario in Model)
+        {
+            <tr>
+                <td>@funcionario.Nome</td>
+                <td>@funcionario.Matricula</td>
+                <td>@funcionario.TarefasAtribuidas</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@funcionario.Id">Editar</a> |
+                    <a asp-action="Delete" asp-route-id="@funcionario.Id">Excluir</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Create">Cadastrar Novo Funcionário</a>

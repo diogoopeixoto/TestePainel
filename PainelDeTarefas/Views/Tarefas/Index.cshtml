@@ -1,0 +1,38 @@
+﻿
+@model IEnumerable<PainelDeTarefas.Models.Tarefas>
+
+<h1>Lista de Tarefas</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Descrição</th>
+            <th>Responsavel</th>
+            <th>Hora de Início</th>
+            <th>Hora Final Estimada</th>
+            <th>Status</th>
+            <th>Tempo Decorrido</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var tarefa in Model)
+        {
+            <tr>
+                <td>@tarefa.Descricao</td>
+                <td>@tarefa.ResponsavelId</td>
+                <td>@tarefa.HoraInicio</td>
+                <td>@tarefa.HoraFinalEstimada</td>
+                <td>@tarefa.Status</td>
+                <td>@tarefa.TempoDecorrido</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@tarefa.Id">Editar</a> |
+                    <a asp-action="Delete" asp-route-id="@tarefa.Id">Excluir</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Create">Cadastrar Nova Tarefa</a>
+

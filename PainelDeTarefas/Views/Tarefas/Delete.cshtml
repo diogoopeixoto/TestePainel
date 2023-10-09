@@ -1,0 +1,48 @@
+﻿@model PainelDeTarefas.Models.Tarefas
+
+<h1>Excluir Tarefa</h1>
+
+<div>
+    <h4>Tem certeza de que deseja excluir esta tarefa?</h4>
+    <dl class="row">
+        <dt class="col-sm-2">
+            Descrição:
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Descricao
+        </dd><dd class="col-sm-10">
+            @Model.Responsavel
+        </dd>
+        <dt class="col-sm-2">
+            Hora de Início:
+        </dt>
+        <dd class="col-sm-10">
+            @Model.HoraInicio
+        </dd>
+        <dt class="col-sm-2">
+            Hora Final Estimada:
+        </dt>
+        <dd class="col-sm-10">
+            @Model.HoraFinalEstimada
+        </dd>
+        <dt class="col-sm-2">
+            Status:
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Status
+        </dd>
+        <dt class="col-sm-2">
+            Tempo Decorrido:
+        </dt>
+        <dd class="col-sm-10">
+            @Model.TempoDecorrido
+        </dd>
+    </dl>
+    <form asp-action="DeleteConfirmed" method="post">
+        <input type="hidden" asp-for="Id" />
+        <div class="form-group">
+            <input type="submit" value="Excluir" class="btn btn-danger" />
+            <a asp-action="Index">Cancelar</a>
+        </div>
+    </form>
+</div>

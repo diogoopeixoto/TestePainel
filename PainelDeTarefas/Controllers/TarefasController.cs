@@ -122,13 +122,19 @@ namespace PainelDeTarefas.Controllers
         }
 
         // Função para recuperar o valor atual do cronômetro (tempo de execução)
+       
         private TimeSpan RecuperarTempoExecucaoAtual(int tarefaId)
         {
-            // Implemente a lógica para recuperar o tempo de execução atual
-            // Pode envolver consultas ao banco de dados ou outra fonte de dados
+            // Recupere o valor atual do cronômetro (tempo de execução) do banco de dados ou de onde ele estiver armazenado
+            var tarefa = _context.Tarefa.Find(tarefaId);
 
-            // Exemplo simples: retorna um valor fixo (00:05:30) para fins de demonstração
-            return TimeSpan.Parse("00:05:30");
+            if (tarefa != null)
+            {
+                return tarefa.TempoExecucao;
+            }
+
+            // Se a tarefa não for encontrada, retorne um valor padrão (por exemplo, zero)
+            return TimeSpan.Zero;
         }
 
 

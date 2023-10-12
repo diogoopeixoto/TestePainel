@@ -47,8 +47,8 @@
                                                     </div>
                                                 </div>
                                             </div>*@
-                                            <div class="col-md-3 mb-4">
-                                                <div class="card ">
+                                           @* <div class="col-md-3 mb-4">
+                                                <div class="card @((tarefa.TempoDecorrido > tarefa.TempoEstimadoEmHoras) ? "card-danger" : "")">
 
 
                                                     <div class="card-body">                                                  
@@ -56,15 +56,30 @@
                                                         <p class="card-text">Alguma descrição da tarefa.</p>
                                                        
                                                         <div class="cronometro" data-tarefa-id="@tarefa.Id">Tempo Execução: 00:00:00</div>
-                                                        
-
-
+                               
                                                         <button type="button" class="btn btn-primary btn-start" data-tarefa-id="@tarefa.Id">Start</button>
                                                         <button type="button" class="btn btn-secondary btn-pause" data-tarefa-id="@tarefa.Id">Pause</button>
                                                         <span class="tempo-estimado">@tarefa.TempoDecorrido</span>
+                                                        <span class="tempo-estimado">@tarefa.TempoEstimadoEmHoras</span>
+
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                            <div class="col-md-3 mb-4">
+                                                <div class="card @((tarefa.TempoDecorrido > tarefa.TempoEstimadoEmHoras) ? "card-danger" : "")">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">@tarefa.Descricao</h5>
+                                                        <p class="card-text">Alguma descrição da tarefa.</p>
+                                                        <div class="cronometro" data-tarefa-id="@tarefa.Id">Tempo Execução: @tarefa.TempoExecucao.ToString(@"hh\:mm\:ss")</div>
+                                                        <button type="button" class="btn btn-primary btn-start" data-tarefa-id="@tarefa.Id">Start</button>
+                                                   
+                                                        <button type="button" class="btn btn-secondary btn-pause btn-atualizar" data-tarefa-id="@tarefa.Id">Pause</button>
+
+                                                        <span class="tempo-estimado">@tarefa.TempoEstimadoEmHoras</span>
                                                     </div>
                                                 </div>
                                             </div>
+
                                                                                        
                                         }
                                     </div>
@@ -140,18 +155,40 @@
             }
 
             function atualizarEstiloCard(tarefaId) {
-                const cardElement = document.querySelector(`.card[data-tarefa-id="${tarefaId}"]`);
+                const cardElement = document.querySelector(`.card[data-tarefa-id="${tarefaId}`);
                 if (cardElement) {
                     const tempoDecorrido = temposDecorridos[tarefaId] || 0;
-                    const tempoEstimado = parseFloat(cardElement.querySelector(".tempo-estimado").innerText);
+                    const tempoEstimadoElement = cardElement.querySelector(".tempo-estimado");
+                    const tempoEstimado = tempoEstimadoElement.innerText;
 
-                    if (tempoDecorrido > tempoEstimado) {
+                    const tempoEstimadoEmHoras = parseInt(tempoEstimado, 10); // Converte para inteiro
+
+                    if (tempoDecorrido > tempoEstimadoEmHoras) {
                         cardElement.classList.add("card-danger");
                     } else {
                         cardElement.classList.remove("card-danger");
                     }
                 }
             }
+
+            function atualizarCronometro(tarefaId, cronometroElement) {
+                let segundos = temposDecorridos[tarefaId] || 0;
+
+                const intervalId = setInterval(() => {
+                    segundos++;
+                    temposDecorridos[tarefaId] = segundos; // Atualiza o tempo decorrido
+
+                    const horas = Math.floor(segundos / 3600);
+                    const minutos = Math.floor((segundos % 3600) / 60);
+                    const seg = segundos % 60;
+                    cronometroElement.innerText = `Tempo decorrido: ${horas}:${minutos}:${seg}`;
+                    atualizarEstiloCard(tarefaId); // Atualiza o estilo do card
+                }, 1000);
+
+                // Armazena o intervalId no objeto intervalIds
+                intervalIds[tarefaId] = intervalId;
+            }
+
 
             // Adiciona um evento de clique a cada botão "Start"
             btnStarts.forEach(function (btnStart) {
@@ -166,10 +203,33 @@
             btnPauses.forEach(function (btnPause) {
                 btnPause.addEventListener("click", function () {
                     const tarefaId = btnPause.getAttribute("data-tarefa-id");
+                    // Pausa o cronômetro
                     pausarCronometro(tarefaId);
+
+                    // Chame a função para atualizar o tempo de execução no controller
+                    atualizarTempoExecucaoNoController(tarefaId);
                 });
             });
+
         });
+
+        function atualizarTempoExecucaoNoController(tarefaId) {
+            $.ajax({
+                url: '/Tarefas/AtualizarTempoExecucao',
+                data: { tarefaId: tarefaId },
+                type: 'POST',
+                success: function (data) {
+                    if (data.success) {
+                        alert(data.message);
+                    } else {
+                        alert(data.message);
+                    }
+                },
+                error: function () {
+                    alert("Ocorreu um erro ao atualizar o tempo de execução.");
+                }
+            });
+        }
 
        
     </script>
